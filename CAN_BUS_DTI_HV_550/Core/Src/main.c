@@ -171,7 +171,7 @@ int main(void)
   uint16_t rxValue;
   uCAN_MSG txMessage;
   uCAN_MSG rxMessage;
-  HAL_ADC_Start(&hadc1);
+//  HAL_ADC_Start(&hadc1);
   CANSPI_Initialize();
   HAL_Delay(1000);
   /* USER CODE END 2 */

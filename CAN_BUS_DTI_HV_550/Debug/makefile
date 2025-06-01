@@ -60,8 +60,8 @@ all: main-build
 main-build: CAN_BUS_DTI_HV_550.elf secondary-outputs
 
 # Tool invocations
-CAN_BUS_DTI_HV_550.elf CAN_BUS_DTI_HV_550.map: $(OBJS) $(USER_OBJS) /Users/tanishqsahu/Desktop/STM32/CAN_BUS_DTI_HV_550/STM32F446RETX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "CAN_BUS_DTI_HV_550.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"/Users/tanishqsahu/Desktop/STM32/CAN_BUS_DTI_HV_550/STM32F446RETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="CAN_BUS_DTI_HV_550.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=softfp -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+CAN_BUS_DTI_HV_550.elf CAN_BUS_DTI_HV_550.map: $(OBJS) $(USER_OBJS) C:\Users\pratham\STM32CubeIDE\workspace_1.17.0\CAN_BUS_SETUP_DTI_HV_550\CAN_BUS_DTI_HV_550\STM32F446RETX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "CAN_BUS_DTI_HV_550.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\pratham\STM32CubeIDE\workspace_1.17.0\CAN_BUS_SETUP_DTI_HV_550\CAN_BUS_DTI_HV_550\STM32F446RETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="CAN_BUS_DTI_HV_550.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=softfp -mthumb -u _printf_float -u _scanf_float -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 

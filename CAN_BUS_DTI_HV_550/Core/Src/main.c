@@ -8,7 +8,7 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-#include "string.h"
+
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "CANSPI.h"
@@ -47,9 +47,9 @@ char uart_buffer[100];
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
-static void MX_CAN1_Init(void);
 static void MX_USART2_UART_Init(void);
 static void MX_SPI1_Init(void);
+static void MX_CAN1_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -91,7 +91,7 @@ void Decode_CAN_Message(CAN_RxHeaderTypeDef *header, uint8_t *data)
             float dc_current = dc_current_raw * 0.1f;
 
             sprintf(uart_buffer,"ID: 0x21 | AC Current: %.2f A | DC Current: %.2f A\r\n",
-                    ac_current, dc_current_raw);
+                    ac_current, dc_current);
             HAL_UART_Transmit(&huart2,uart_buffer,sizeof(uart_buffer),100);
             HAL_Delay(500);
             break;
@@ -163,9 +163,9 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
-  MX_CAN1_Init();
   MX_USART2_UART_Init();
   MX_SPI1_Init();
+  MX_CAN1_Init();
   /* USER CODE BEGIN 2 */
   uint16_t readValue;
   uint16_t rxValue;

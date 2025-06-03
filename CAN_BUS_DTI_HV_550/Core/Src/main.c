@@ -42,6 +42,7 @@ UART_HandleTypeDef huart2;
 //uint8_t can_msg_received = 0;
 
 char uart_buffer[100];
+char test[100];
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -66,21 +67,44 @@ void Decode_CAN_Message(CAN_RxHeaderTypeDef *header, uint8_t *data)
 {
     switch (header->StdId)
     {
-		case 0x20: // ERPM, Duty, Voltage
+		case 0x1F0F: // General Data 6: Control mode, Target Iq, Motor position, isMotorStill
 		{
-			int32_t erpm = (int32_t)((data[0] << 24) | (data[1] << 16) | (data[2] << 8) | data[3]);
-			uint16_t duty_raw = (data[4] << 8) | data[5];
-			uint16_t voltage = (data[6] << 8) | data[7];
+			uint8_t control_mode = data[0];
 
-			float duty = duty_raw / 10.0f;
+			int16_t target_iq_raw = (int16_t)((data[1] << 8) | data[2]);
+			float target_iq = target_iq_raw / 10.0f;
+
+			uint16_t motor_position_raw = (data[3] << 8) | data[4];
+			float motor_position = motor_position_raw / 10.0f;
+
+			uint8_t is_motor_still = data[5];
 
 			snprintf(uart_buffer,
-					"ID: 0x20 | ERPM: %ld | Duty: %.1f %% | Voltage: %u V\r\n",
-					erpm, duty, voltage);
-			HAL_UART_Transmit(&huart2,uart_buffer,sizeof(uart_buffer),100);
-			HAL_Delay(500);
+					 sizeof(uart_buffer),
+					 "ID: 0x1F0F | Ctrl Mode: %u | Target Iq: %.1f A | Motor Pos: %.1f deg | Still: %s\r\n",
+					 control_mode,
+					 target_iq,
+					 motor_position,
+					 is_motor_still ? "1" : "0");
+
+			HAL_UART_Transmit(&huart2, (uint8_t*)uart_buffer, strlen(uart_buffer), 100);
 			break;
 		}
+        case 0x20: // ERPM, Duty, Voltage
+        {
+            int32_t erpm = (int32_t)((data[0] << 24) | (data[1] << 16) | (data[2] << 8) | data[3]);
+            uint16_t duty_raw = (data[4] << 8) | data[5];
+            uint16_t voltage = (data[6] << 8) | data[7];
+
+            float duty = duty_raw / 10.0f;
+
+            snprintf(uart_buffer,
+                     sizeof(uart_buffer),
+                     "ID: 0x20 | ERPM: %ld | Duty: %.1f %% | Voltage: %u V\r\n",
+                     erpm, duty, voltage);
+            HAL_UART_Transmit(&huart2, (uint8_t*)uart_buffer, strlen(uart_buffer), 100);
+            break;
+        }
 
         case 0x21: // AC Current, DC Current
         {
@@ -90,10 +114,11 @@ void Decode_CAN_Message(CAN_RxHeaderTypeDef *header, uint8_t *data)
             float ac_current = ac_current_raw * 0.01f;
             float dc_current = dc_current_raw * 0.1f;
 
-            sprintf(uart_buffer,"ID: 0x21 | AC Current: %.2f A | DC Current: %.2f A\r\n",
-                    ac_current, dc_current);
-            HAL_UART_Transmit(&huart2,uart_buffer,sizeof(uart_buffer),100);
-            HAL_Delay(500);
+            snprintf(uart_buffer,
+                     sizeof(uart_buffer),
+                     "ID: 0x21 | AC Current: %.2f A | DC Current: %.2f A\r\n",
+                     ac_current, dc_current);
+            HAL_UART_Transmit(&huart2, (uint8_t*)uart_buffer, strlen(uart_buffer), 100);
             break;
         }
 
@@ -106,22 +131,23 @@ void Decode_CAN_Message(CAN_RxHeaderTypeDef *header, uint8_t *data)
             float ctrl_temp = ctrl_temp_raw * 0.1f;
             float motor_temp = motor_temp_raw * 0.1f;
 
-            sprintf(uart_buffer,
-                    "ID: 0x22 | Ctrl Temp: %.1f °C | Motor Temp: %.1f °C | Fault: 0x%02X\r\n",
-                    ctrl_temp, motor_temp, fault_code);
-            HAL_UART_Transmit(&huart2,uart_buffer,sizeof(uart_buffer),100);
-            HAL_Delay(500);
+            snprintf(uart_buffer,
+                     sizeof(uart_buffer),
+                     "ID: 0x22 | Ctrl Temp: %.1f °C | Motor Temp: %.1f °C | Fault: 0x%02X\r\n",
+                     ctrl_temp, motor_temp, fault_code);
+            HAL_UART_Transmit(&huart2, (uint8_t*)uart_buffer, strlen(uart_buffer), 100);
             break;
         }
 
         default:
-            sprintf(uart_buffer, "Unknown CAN ID: 0x%03lX\r\n", (unsigned long)header->StdId);
-            HAL_UART_Transmit(&huart2,uart_buffer,sizeof(uart_buffer),100);
-            HAL_Delay(500);
+        {
+            snprintf(uart_buffer,
+                     sizeof(uart_buffer),
+                     "Unknown CAN ID: 0x%03lX\r\n", (unsigned long)header->StdId);
+            HAL_UART_Transmit(&huart2, (uint8_t*)uart_buffer, strlen(uart_buffer), 100);
             break;
+        }
     }
-
-    HAL_UART_Transmit(&huart2, (uint8_t*)uart_buffer, strlen(uart_buffer), HAL_MAX_DELAY);
 }
 
 //void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
@@ -194,17 +220,18 @@ int main(void)
 //	    txMessage.frame.data6 = readValue & 0xff;
 //	    txMessage.frame.data7 = readValue >> 8;
 //	    CANSPI_Transmit(&txMessage);
+    /* USER CODE END WHILE */
 
+    /* USER CODE BEGIN 3 */
 	    if(CANSPI_Receive(&rxMessage))
 	    {
+//	    	sprintf(test,"Tough%d\n",100);
+//	    	HAL_UART_Transmit(&huart2,test,sizeof(test),100);
 	    	CAN_RxHeaderTypeDef fakeHeader;
 	    	fakeHeader.StdId = rxMessage.frame.id;
 	    	Decode_CAN_Message(&fakeHeader, &rxMessage.frame.data0);
 	    }
 	    HAL_Delay(100);
-    /* USER CODE END WHILE */
-
-    /* USER CODE BEGIN 3 */
 
   }
   /* USER CODE END 3 */

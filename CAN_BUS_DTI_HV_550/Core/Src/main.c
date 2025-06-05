@@ -90,7 +90,7 @@ void Decode_CAN_Message(CAN_RxHeaderTypeDef *header, uint8_t *data)
 			HAL_UART_Transmit(&huart2, (uint8_t*)uart_buffer, strlen(uart_buffer), 100);
 			break;
 		}
-        case 0x20: // ERPM, Duty, Voltage
+        case 0x200F: // ERPM, Duty, Voltage
         {
             int32_t erpm = (int32_t)((data[0] << 24) | (data[1] << 16) | (data[2] << 8) | data[3]);
             uint16_t duty_raw = (data[4] << 8) | data[5];
@@ -100,13 +100,13 @@ void Decode_CAN_Message(CAN_RxHeaderTypeDef *header, uint8_t *data)
 
             snprintf(uart_buffer,
                      sizeof(uart_buffer),
-                     "ID: 0x20 | ERPM: %ld | Duty: %.1f %% | Voltage: %u V\r\n",
+                     "ID: 0x200F | ERPM: %ld | Duty: %.1f %% | Voltage: %u V\r\n",
                      erpm, duty, voltage);
             HAL_UART_Transmit(&huart2, (uint8_t*)uart_buffer, strlen(uart_buffer), 100);
             break;
         }
 
-        case 0x21: // AC Current, DC Current
+        case 0x210F: // AC Current, DC Current
         {
             uint16_t ac_current_raw = (data[0] << 8) | data[1];
             uint16_t dc_current_raw = (data[2] << 8) | data[3];
@@ -116,13 +116,13 @@ void Decode_CAN_Message(CAN_RxHeaderTypeDef *header, uint8_t *data)
 
             snprintf(uart_buffer,
                      sizeof(uart_buffer),
-                     "ID: 0x21 | AC Current: %.2f A | DC Current: %.2f A\r\n",
+                     "ID: 0x210F | AC Current: %.2f A | DC Current: %.2f A\r\n",
                      ac_current, dc_current);
             HAL_UART_Transmit(&huart2, (uint8_t*)uart_buffer, strlen(uart_buffer), 100);
             break;
         }
 
-        case 0x22: // Ctrl Temp, Motor Temp, Fault Code
+        case 0x220F: // Ctrl Temp, Motor Temp, Fault Code
         {
             uint16_t ctrl_temp_raw = (data[0] << 8) | data[1];
             uint16_t motor_temp_raw = (data[2] << 8) | data[3];
@@ -133,7 +133,7 @@ void Decode_CAN_Message(CAN_RxHeaderTypeDef *header, uint8_t *data)
 
             snprintf(uart_buffer,
                      sizeof(uart_buffer),
-                     "ID: 0x22 | Ctrl Temp: %.1f °C | Motor Temp: %.1f °C | Fault: 0x%02X\r\n",
+                     "ID: 0x220F | Ctrl Temp: %.1f °C | Motor Temp: %.1f °C | Fault: 0x%02X\r\n",
                      ctrl_temp, motor_temp, fault_code);
             HAL_UART_Transmit(&huart2, (uint8_t*)uart_buffer, strlen(uart_buffer), 100);
             break;

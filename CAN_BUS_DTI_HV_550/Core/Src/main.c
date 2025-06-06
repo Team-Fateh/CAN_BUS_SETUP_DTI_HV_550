@@ -34,6 +34,7 @@ CAN_HandleTypeDef hcan1;
 
 SPI_HandleTypeDef hspi1;
 
+UART_HandleTypeDef huart1;
 UART_HandleTypeDef huart2;
 
 /* USER CODE BEGIN PV */
@@ -43,6 +44,16 @@ UART_HandleTypeDef huart2;
 
 char uart_buffer[100];
 char test[100];
+uint8_t Cmd_End[3] = {0xFF,0xFF,0xFF};  // command end sequence
+uint8_t control_mode;
+
+int16_t target_iq_raw;
+float target_iq;
+
+uint16_t motor_position_raw;
+float motor_position;
+
+uint8_t is_motor_still;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -51,12 +62,14 @@ static void MX_GPIO_Init(void);
 static void MX_USART2_UART_Init(void);
 static void MX_SPI1_Init(void);
 static void MX_CAN1_Init(void);
+static void MX_USART1_UART_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+
 int _write(int file, char *ptr, int len)
 {
     HAL_UART_Transmit(&huart2, (uint8_t *)ptr, len, HAL_MAX_DELAY);
@@ -69,15 +82,15 @@ void Decode_CAN_Message(CAN_RxHeaderTypeDef *header, uint8_t *data)
     {
 		case 0x1F0F: // General Data 6: Control mode, Target Iq, Motor position, isMotorStill
 		{
-			uint8_t control_mode = data[0];
+			control_mode = data[0];
 
-			int16_t target_iq_raw = (int16_t)((data[1] << 8) | data[2]);
-			float target_iq = target_iq_raw / 10.0f;
+			target_iq_raw = (int16_t)((data[1] << 8) | data[2]);
+			target_iq = target_iq_raw / 10.0f;
 
-			uint16_t motor_position_raw = (data[3] << 8) | data[4];
-			float motor_position = motor_position_raw / 10.0f;
+			motor_position_raw = (data[3] << 8) | data[4];
+			motor_position = motor_position_raw / 10.0f;
 
-			uint8_t is_motor_still = data[5];
+			is_motor_still = data[5];
 
 			snprintf(uart_buffer,
 					 sizeof(uart_buffer),
@@ -150,6 +163,14 @@ void Decode_CAN_Message(CAN_RxHeaderTypeDef *header, uint8_t *data)
     }
 }
 
+void NEXTION_SendString (char *ID, char *string)
+{
+	char buf[50];
+	int len = sprintf (buf, "%s.txt=\"%s\"", ID, string);
+	HAL_UART_Transmit(&huart1, (uint8_t *)buf, len, 1000);
+	HAL_UART_Transmit(&huart1, Cmd_End, 3, 100);
+}
+
 //void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 //{
 //    if (HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO0, &RxHeader, RxData) == HAL_OK)
@@ -192,6 +213,7 @@ int main(void)
   MX_USART2_UART_Init();
   MX_SPI1_Init();
   MX_CAN1_Init();
+  MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
   uint16_t readValue;
   uint16_t rxValue;
@@ -232,6 +254,11 @@ int main(void)
 	    	Decode_CAN_Message(&fakeHeader, &rxMessage.frame.data0);
 	    }
 	    HAL_Delay(100);
+	    NEXTION_SendString ("t24", motor_temp);
+	    NEXTION_SendString ("t27", voltage);
+		NEXTION_SendString ("t15", erpm/10);
+		NEXTION_SendString ("t5", "20%");
+		NEXTION_SendString ("t3", "20%");
 
   }
   /* USER CODE END 3 */
@@ -350,6 +377,39 @@ static void MX_SPI1_Init(void)
   /* USER CODE BEGIN SPI1_Init 2 */
 
   /* USER CODE END SPI1_Init 2 */
+
+}
+
+/**
+  * @brief USART1 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_USART1_UART_Init(void)
+{
+
+  /* USER CODE BEGIN USART1_Init 0 */
+
+  /* USER CODE END USART1_Init 0 */
+
+  /* USER CODE BEGIN USART1_Init 1 */
+
+  /* USER CODE END USART1_Init 1 */
+  huart1.Instance = USART1;
+  huart1.Init.BaudRate = 115200;
+  huart1.Init.WordLength = UART_WORDLENGTH_8B;
+  huart1.Init.StopBits = UART_STOPBITS_1;
+  huart1.Init.Parity = UART_PARITY_NONE;
+  huart1.Init.Mode = UART_MODE_TX_RX;
+  huart1.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+  huart1.Init.OverSampling = UART_OVERSAMPLING_16;
+  if (HAL_UART_Init(&huart1) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN USART1_Init 2 */
+
+  /* USER CODE END USART1_Init 2 */
 
 }
 

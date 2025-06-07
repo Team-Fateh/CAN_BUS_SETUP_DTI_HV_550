@@ -26,6 +26,16 @@
 
 /* Private macro -------------------------------------------------------------*/
 /* USER CODE BEGIN PM */
+#define NEXTION_SEND(ID, val) _Generic((val), \
+    int16_t: NEXTION_SendInt, \
+    uint16_t: NEXTION_SendInt, \
+    int32_t: NEXTION_SendInt, \
+    uint32_t: NEXTION_SendInt, \
+    float: NEXTION_SendFloat, \
+    default: NEXTION_SendString \
+)(ID, val)
+
+
 
 /* USER CODE END PM */
 
@@ -43,17 +53,36 @@ UART_HandleTypeDef huart2;
 //uint8_t can_msg_received = 0;
 
 char uart_buffer[100];
+
+//1F0F
 char test[100];
 uint8_t Cmd_End[3] = {0xFF,0xFF,0xFF};  // command end sequence
 uint8_t control_mode;
-
 int16_t target_iq_raw;
 float target_iq;
-
 uint16_t motor_position_raw;
 float motor_position;
-
 uint8_t is_motor_still;
+
+//200F
+int32_t erpm;
+uint16_t duty_raw;
+uint16_t voltage;
+float duty;
+
+//210F
+uint16_t ac_current_raw;
+uint16_t dc_current_raw;
+float ac_current;
+float dc_current;
+
+//220F
+uint16_t ctrl_temp_raw;
+uint16_t motor_temp_raw;
+uint8_t fault_code;
+float ctrl_temp;
+float motor_temp;
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -105,11 +134,11 @@ void Decode_CAN_Message(CAN_RxHeaderTypeDef *header, uint8_t *data)
 		}
         case 0x200F: // ERPM, Duty, Voltage
         {
-            int32_t erpm = (int32_t)((data[0] << 24) | (data[1] << 16) | (data[2] << 8) | data[3]);
-            uint16_t duty_raw = (data[4] << 8) | data[5];
-            uint16_t voltage = (data[6] << 8) | data[7];
+            erpm = (int32_t)((data[0] << 24) | (data[1] << 16) | (data[2] << 8) | data[3]);
+            duty_raw = (data[4] << 8) | data[5];
+            voltage = (data[6] << 8) | data[7];
 
-            float duty = duty_raw / 10.0f;
+            duty = duty_raw / 10.0f;
 
             snprintf(uart_buffer,
                      sizeof(uart_buffer),
@@ -121,11 +150,11 @@ void Decode_CAN_Message(CAN_RxHeaderTypeDef *header, uint8_t *data)
 
         case 0x210F: // AC Current, DC Current
         {
-            uint16_t ac_current_raw = (data[0] << 8) | data[1];
-            uint16_t dc_current_raw = (data[2] << 8) | data[3];
+            ac_current_raw = (data[0] << 8) | data[1];
+            dc_current_raw = (data[2] << 8) | data[3];
 
-            float ac_current = ac_current_raw * 0.01f;
-            float dc_current = dc_current_raw * 0.1f;
+            ac_current = ac_current_raw * 0.01f;
+            dc_current = dc_current_raw * 0.1f;
 
             snprintf(uart_buffer,
                      sizeof(uart_buffer),
@@ -137,12 +166,12 @@ void Decode_CAN_Message(CAN_RxHeaderTypeDef *header, uint8_t *data)
 
         case 0x220F: // Ctrl Temp, Motor Temp, Fault Code
         {
-            uint16_t ctrl_temp_raw = (data[0] << 8) | data[1];
-            uint16_t motor_temp_raw = (data[2] << 8) | data[3];
-            uint8_t fault_code = data[4];
+            ctrl_temp_raw = (data[0] << 8) | data[1];
+            motor_temp_raw = (data[2] << 8) | data[3];
+            fault_code = data[4];
 
-            float ctrl_temp = ctrl_temp_raw * 0.1f;
-            float motor_temp = motor_temp_raw * 0.1f;
+            ctrl_temp = ctrl_temp_raw * 0.1f;
+            motor_temp = motor_temp_raw * 0.1f;
 
             snprintf(uart_buffer,
                      sizeof(uart_buffer),
@@ -163,13 +192,39 @@ void Decode_CAN_Message(CAN_RxHeaderTypeDef *header, uint8_t *data)
     }
 }
 
-void NEXTION_SendString (char *ID, char *string)
-{
-	char buf[50];
-	int len = sprintf (buf, "%s.txt=\"%s\"", ID, string);
-	HAL_UART_Transmit(&huart1, (uint8_t *)buf, len, 1000);
-	HAL_UART_Transmit(&huart1, Cmd_End, 3, 100);
+void NEXTION_SendString(const char *ID, const char *string) {
+    char buf[50];
+    int len = sprintf(buf, "%s.txt=\"%s\"", ID, string);
+    HAL_UART_Transmit(&huart1, (uint8_t *)buf, len, 1000);
+    HAL_UART_Transmit(&huart1, (uint8_t *)"\xFF\xFF\xFF", 3, 100);
 }
+
+void NEXTION_SendInt(char *ID, int value) {
+    char str[20];
+    sprintf(str, "%d", value);
+    NEXTION_SendString(ID, str);
+}
+
+void NEXTION_SendFloat(char *ID, float value) {
+    char str[20];
+    sprintf(str, "%.2f", value);
+    NEXTION_SendString(ID, str);
+}
+
+void NEXTION_SendInt32(const char *ID, int32_t value) {
+    char buf[50];
+    int len = sprintf(buf, "%s.txt=\"%ld\"", ID, (long)value);  // Use %ld for 32-bit int
+    HAL_UART_Transmit(&huart1, (uint8_t *)buf, len, 1000);
+    HAL_UART_Transmit(&huart1, (uint8_t *)"\xFF\xFF\xFF", 3, 100);
+}
+
+void NEXTION_SendUint16(const char *ID, uint16_t value) {
+    char buf[50];
+    int len = sprintf(buf, "%s.txt=\"%u\"", ID, value);
+    HAL_UART_Transmit(&huart1, (uint8_t *)buf, len, 1000);
+    HAL_UART_Transmit(&huart1, (uint8_t *)"\xFF\xFF\xFF", 3, 100);
+}
+
 
 //void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 //{
@@ -254,11 +309,11 @@ int main(void)
 	    	Decode_CAN_Message(&fakeHeader, &rxMessage.frame.data0);
 	    }
 	    HAL_Delay(100);
-	    NEXTION_SendString ("t24", motor_temp);
-	    NEXTION_SendString ("t27", voltage);
-		NEXTION_SendString ("t15", erpm/10);
-		NEXTION_SendString ("t5", "20%");
-		NEXTION_SendString ("t3", "20%");
+//	    NEXTION_SEND("t27", voltage);      // uint16_t
+	    NEXTION_SEND("t15", erpm / 10);    // int32_t divided, result is int
+	    NEXTION_SEND("t24", motor_temp);   // float
+		NEXTION_SendString ("t5", "30");
+		NEXTION_SendString ("t3", "30");
 
   }
   /* USER CODE END 3 */
@@ -396,7 +451,7 @@ static void MX_USART1_UART_Init(void)
 
   /* USER CODE END USART1_Init 1 */
   huart1.Instance = USART1;
-  huart1.Init.BaudRate = 115200;
+  huart1.Init.BaudRate = 9600;
   huart1.Init.WordLength = UART_WORDLENGTH_8B;
   huart1.Init.StopBits = UART_STOPBITS_1;
   huart1.Init.Parity = UART_PARITY_NONE;

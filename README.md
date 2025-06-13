@@ -17,7 +17,7 @@ This project sets up CAN communication between a **DTI HV 550 Motor Controller**
 
 This section details the pin connections between the **STM32 Nucleo F446RE** and the **MCP2515 CAN module** using the SPI interface. The CAN bus is then connected to the **DTI HV 550 Motor Controller**.
 
-<img src="Images/MCP2515.jpg" alt="MCP2515" width="300"/>
+<img src="Images/STM32xMCP2515.png" alt="Setup" width="400"/>
 
 ---
 
@@ -33,7 +33,7 @@ This section details the pin connections between the **STM32 Nucleo F446RE** and
 
 ---
 
-![Setup](Images/MCP2515.jpg)
+<img src="Images/MCP2515.jpg" alt="MCP2515" width="300"/>
 
 ### ⚡ Power and Ground
 

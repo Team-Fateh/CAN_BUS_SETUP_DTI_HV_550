@@ -12,7 +12,7 @@ This project sets up CAN communication between a **DTI HV 550 Motor Controller**
 | **Connecting Wires**                | For SPI and power connections between STM32, MCP2515 and DTI HV 550|
 | **External Power Supply**           | For powering components.                                           |
 
-#HARDWARE SETUP
+# HARDWARE SETUP
 
 ## 🔌 STM32F446RE to MCP2515 CAN Module Wiring
 

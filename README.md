@@ -78,3 +78,18 @@ This section details the pin connections between the **STM32 Nucleo F446RE** and
 <img src="Images/theSetup.jpg" alt="TE" width="1000"/>
 
 
+## 💻 Software Requirements
+
+This section lists the necessary tools, libraries, and software configurations needed to build, flash, and test the CAN communication setup.
+
+### 🧰 Development Tools
+
+| Tool/Software                  | Description                                                                 |
+|------------------------        |-----------------------------------------------------------------------------|
+| **STM32CubeIDE**               | All-in-one IDE for STM32 development (code editing, build, flash, debug)    |
+| **STM32CubeMX**                | Optional GUI tool for configuring peripherals, generating HAL boilerplate   |
+| **DTI CAN Tool**               | Desktop tool provided by DTI to send/receive CAN messages and debug         |
+| **Serial Terminal (optional)** | e.g. PuTTY or Tera Term, for UART-based debugging                           |
+
+---
+

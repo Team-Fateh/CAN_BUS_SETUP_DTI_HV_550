@@ -2,7 +2,7 @@ This project sets up CAN communication between a **DTI HV 550 Motor Controller**
 
 ## 🔧 Hardware Requirements
 
-| Component                           | Description / Notes                                                |
+| Component                           | Description                                                        |
 |-------------------------------      |------------------------------------------------------------------  |
 | **DTI HV 550 Motor Controller**     | High-voltage EV motor controller with CAN interface                |
 | **STM32 Nucleo F446RE**             | ARM Cortex-M4 development board                                    |

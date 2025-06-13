@@ -1,8 +1,6 @@
-## 🔧 Hardware Requirements
-
 This project sets up CAN communication between a **DTI HV 550 Motor Controller** and an **STM32 Nucleo F446RE** board using an **MCP2515 CAN module**. The **DTI CAN Tool** is used for monitoring, debugging, and verifying communication on the CAN network.
 
-### 📦 Components List
+## 🔧 Hardware Requirements
 
 | Component                           | Description / Notes                                              |
 |-------------------------------      |-------------------------------------------------------------------|

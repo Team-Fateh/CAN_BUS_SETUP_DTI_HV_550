@@ -32,6 +32,7 @@ This section details the pin connections between the **STM32 Nucleo F446RE** and
 | `INT`       | `PA0` (optional)      | Interrupt from MCP2515       |
 
 ---
+## 🔌 MCP2515 CAN MODULE
 
 <img src="Images/MCP2515.jpg" alt="MCP2515" width="300"/>
 

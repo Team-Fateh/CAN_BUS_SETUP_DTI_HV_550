@@ -65,3 +65,7 @@ This section details the pin connections between the **STM32 Nucleo F446RE** and
   </tr>
 </table>
 
+## Harness connector pinout (H) - Inverter side
+
+<img src="Images/CanConnPinouts.png" alt="MCP2515" >
+

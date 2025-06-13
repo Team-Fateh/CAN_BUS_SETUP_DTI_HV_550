@@ -56,3 +56,12 @@ This section details the pin connections between the **STM32 Nucleo F446RE** and
 - Connect the **DTI CAN Tool** in parallel to monitor traffic on the same CAN lines.
 
 ---
+
+## 🔌 CAN WIRING DTI COM 
+<table>
+  <tr>
+    <td><img src="Images/Canwiring.png" alt="DTICOM" width="300"/></td>
+    <td><img src="Images/DTICOM.png" alt="DTICOM" width="300"/></td>
+  </tr>
+</table>
+

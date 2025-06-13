@@ -33,6 +33,8 @@ This section details the pin connections between the **STM32 Nucleo F446RE** and
 
 ---
 
+![Setup](Images/MCP2515.jpg)
+
 ### ⚡ Power and Ground
 
 | MCP2515 Pin | STM32 / Power Supply | Notes                                  |

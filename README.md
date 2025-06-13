@@ -74,3 +74,7 @@ This section details the pin connections between the **STM32 Nucleo F446RE** and
   </tr>
 </table>
 
+# The Setup 
+<img src="Images/theSetup.png" alt="TE" width="500"/>
+
+

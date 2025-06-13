@@ -78,7 +78,7 @@ This section details the pin connections between the **STM32 Nucleo F446RE** and
 <img src="Images/theSetup.jpg" alt="TE" width="1000"/>
 
 
-#💻 Software Requirements
+# 💻 Software Requirements
 
 This section lists the necessary tools, libraries, and software configurations needed to build, flash, and test the CAN communication setup.
 

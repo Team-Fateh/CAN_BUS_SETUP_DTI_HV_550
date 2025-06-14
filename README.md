@@ -31,7 +31,7 @@ This section details the pin connections between the **STM32 Nucleo F446RE** and
 | `MOSI`      | `PA7 (SPI1_MOSI)`     | SPI Master Out Slave In      |
 | `CS`        | `PB6` (user-defined)  | Chip Select (active low)     |
 | `INT`       | `PA0` (optional)      | Interrupt from MCP2515       |
-<img src="Images/stm32_mcp.png" alt="Setup" width="400"/>
+<img src="Images/stm32_mcp.jpg" alt="Setup" width="400"/>
 
 ---
 ## 🔌 MCP2515 CAN MODULE

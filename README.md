@@ -470,7 +470,7 @@ We used the **Rigol MSO5104** oscilloscope to troubleshoot CAN communication in 
 <table>
   <tr>
     <td><img src="Images/MSO.jpg" alt="Setup" width="500"/></td>
-    <td><img src="Images/DTICOM.png" alt="DTICOM" width="500"/></td>
+    <td><img src="Images/decodingcan.jpg" alt="DTICOM" width="500"/></td>
   </tr>
 </table>
 

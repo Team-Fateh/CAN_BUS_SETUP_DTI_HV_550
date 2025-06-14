@@ -93,3 +93,70 @@ This section lists the necessary tools, libraries, and software configurations n
 
 ---
 
+## 🧑‍💻 STM32CubeIDE Project Configuration
+
+### ✅ 1. Create Project
+
+- Open **STM32CubeIDE**
+- New STM32 Project → Select `NUCLEO-F446RE`
+- Name your project (e.g., `MCP2515_CAN_DTI`)
+
+---
+
+### ⚙️ 2. System Configuration
+
+#### SYS
+
+- **Debug**: `Serial Wire`
+
+#### RCC
+
+- **High-Speed Clock (HSE)**: `Crystal/Ceramic Resonator`
+
+---
+
+### ⏰ 3. Clock Configuration
+
+- Open **Clock Configuration** tab
+- Set `HCLK` = **180 MHz** (max for F446RE)
+- Let Cube auto-configure PLLs
+
+---
+
+### 🧩 4. Peripheral Pinout & Configuration
+
+#### SPI1 Configuration
+
+- Enable `SPI1` under Connectivity
+- Mode: `Full-Duplex Master`
+- Prescaler: `32` → SPI Clock = **5.625 MHz** (safe for MCP2515)
+- Pins used:
+  - SCK → `PA5`
+  - MISO → `PA6`
+  - MOSI → `PA7`
+
+#### GPIO Configuration
+
+- `PA4`: GPIO_Output (Label as `CAN_CS`)
+- `PA0`: GPIO_Input (Optional MCP2515 INT)
+
+#### UART (Optional for Serial Debug)
+
+- Enable `USART2`
+  - TX: `PA2`
+  - RX: `PA3`
+  - Baud Rate: 115200
+
+---
+
+### 🛠️ 5. Generate Code
+
+- Click **Project > Generate Code**
+- Use **STM32CubeIDE** toolchain
+- This generates:
+  - `main.c` - user application logic
+  - `spi.c` - SPI setup
+  - `gpio.c` - GPIO (including CS line)
+  - `usart.c` - UART debug (optional)
+
+---

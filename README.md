@@ -117,7 +117,7 @@ This section lists the necessary tools, libraries, and software configurations n
 - **High-Speed Clock (HSE)**: `Crystal/Ceramic Resonator`
 <img src="Images/rcc.png" alt="Setup" width="900"/>
 
-#### ⚡ Why Set STM32F446RE System Clock to 180 MHz?
+### ⚡ Why Set STM32F446RE System Clock to 180 MHz?
 
 Setting the STM32F446RE to **180 MHz** (its maximum frequency) improves performance across the entire project:
 

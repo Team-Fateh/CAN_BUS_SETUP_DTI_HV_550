@@ -175,7 +175,9 @@ Enable SPI1 under **Connectivity**:
 | Function       | Pin   | Mode         |
 |----------------|--------|--------------|
 | `CAN_CS`       | `PA4` | GPIO_Output  |
-| `MCP2515 INT`  | `PA0` | GPIO_Input (Optional) |
+<img src="Images/GPIO.png" alt="Setup" width="900"/>
+
+---
 
 #### 🛰️ UART2 (Optional for Debug)
 

@@ -124,7 +124,7 @@ This section lists the necessary tools, libraries, and software configurations n
 - Open the **Clock Configuration** tab
 - Set the system clock (`HCLK`) to **180 MHz**
 - Let STM32CubeIDE auto-calculate PLL settings
-
+<img src="Images/clockconfig.png" alt="Setup" width="900"/>
 ---
 
 ### 🧩 4. Peripheral Pinout & Configuration

@@ -461,4 +461,34 @@ while (1)
 
 <img src="Images/output.jpg" alt="Setup" width="900"/>
 
+## 🔧 CAN Bus Debugging with Rigol MSO5104
+
+We used the **Rigol MSO5104** oscilloscope to troubleshoot CAN communication in real time.
+
+### 🖼️ Snapshot
+
+<table>
+  <tr>
+    <td><img src="Images/MSO.jpg" alt="Setup" width="500"/></td>
+    <td><img src="Images/DTICOM.png" alt="DTICOM" width="500"/></td>
+  </tr>
+</table>
+
+> The MSO5104 decodes live CAN packets showing ID, data, CRC, and ACK results.
+
+### 🛠️ Setup
+
+- **Channels**: CH1 (CAN_H), CH2 (CAN_L)
+- **Baud Rate**: 500 kbps
+- **Decoder**: CAN protocol analyzer (enabled)
+- **Sample Rate**: 500 MSa/s
+- **Timebase**: 5 ms/div
+
+### ✅ Why MSO?
+
+- Live protocol decode (IDs, data, ACK)
+- Checks timing and CRC integrity
+- Confirms correct message transmission
+
+---
 

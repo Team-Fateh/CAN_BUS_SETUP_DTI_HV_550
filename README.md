@@ -183,14 +183,18 @@ Enable SPI1 under **Connectivity**:
 
 #### CAN1 (Optional - STM32 Native CAN)
 
-Enable `CAN1` in CubeMX if using STM32 CAN hardware directly.
+If using STM32 CAN features (`CAN_TxHeaderTypeDef`, `CAN_RxHeaderTypeDef`), enable `CAN1`:
 
-| Function | STM32 Pin | Alternate Function |
-|----------|------------|--------------------|
-| CAN_TX   | `PB9`      | `AF9`              |
-| CAN_RX   | `PB8`      | `AF9`              |
+| Signal | STM32 Pin | Alt Function |
+|--------|------------|---------------|
+| CAN_TX | `PA12`     | AF9           |
+| CAN_RX | `PA11`     | AF9           |
+
+> ⚠️ This is only needed if you're using **STM32's internal CAN** instead of MCP2515.
 
 <img src="Images/can.png" alt="Setup" width="900"/>
+
+---
 
 ### 5. Generate Code
 
@@ -455,10 +459,6 @@ while (1)
 
 ---
 
-## Example UART2 Output
+<img src="Images/output.jpg" alt="Setup" width="900"/>
 
-```text
-ID: 0x200F | ERPM: 4500 | Duty: 67.8 % | Voltage: 52 V
-ID: 0x210F | AC Current: 5.60 A | DC Current: 23.70 A
-ID: 0x220F | Ctrl Temp: 54.0 °C | Motor Temp: 49.5 °C | Fault: 0x00
 

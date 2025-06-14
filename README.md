@@ -165,8 +165,11 @@ Enable SPI1 under **Connectivity**:
 | MISO       | `PA6`      |
 | MOSI       | `PA7`      |
 
-  <img src="Images/SPI.png" alt="Setup" width="900"/>
+<img src="Images/SPI.png" alt="Setup" width="900"/>
+
 ---
+
+
 #### 🧷 GPIO Configuration
 
 | Function       | Pin   | Mode         |

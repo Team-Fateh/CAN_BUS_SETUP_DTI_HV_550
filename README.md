@@ -188,6 +188,7 @@ Enable SPI1 under **Connectivity**:
 |--------|--------|
 | TX     | `PA2` |
 | RX     | `PA3` |
+
 <img src="Images/usart2.png" alt="Setup" width="900"/>
 
 ---
@@ -204,6 +205,8 @@ If using STM32 CAN features (`CAN_TxHeaderTypeDef`, `CAN_RxHeaderTypeDef`), enab
 | CAN_RX   | `PB8`      | `AF9`              |
 
 > 💡 These are required only if you're using STM32’s internal CAN controller and HAL CAN APIs like `HAL_CAN_AddTxMessage()`.
+
+<img src="Images/can.png" alt="Setup" width="900"/>
 
 ---
 

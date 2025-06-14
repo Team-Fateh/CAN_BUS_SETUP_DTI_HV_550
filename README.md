@@ -98,7 +98,8 @@ This section lists the necessary tools, libraries, and software configurations n
 ### ✅ 1. Create Project
 
 - Open **STM32CubeIDE**
-- New STM32 Project → Select `NUCLEO-F446RE`
+- Create a **New STM32 Project**
+- Select board: `NUCLEO-F446RE`
 - Name your project (e.g., `MCP2515_CAN_DTI`)
 
 ---
@@ -107,7 +108,7 @@ This section lists the necessary tools, libraries, and software configurations n
 
 #### SYS
 
-- **Debug**: `Serial Wire`
+- **Debug Interface**: `Serial Wire`
 
 #### RCC
 
@@ -117,46 +118,77 @@ This section lists the necessary tools, libraries, and software configurations n
 
 ### ⏰ 3. Clock Configuration
 
-- Open **Clock Configuration** tab
-- Set `HCLK` = **180 MHz** (max for F446RE)
-- Let Cube auto-configure PLLs
+- Open the **Clock Configuration** tab
+- Set the system clock (`HCLK`) to **180 MHz**
+- Let STM32CubeIDE auto-calculate PLL settings
 
 ---
 
 ### 🧩 4. Peripheral Pinout & Configuration
 
-#### SPI1 Configuration
+#### 🔄 SPI1 Configuration
 
-- Enable `SPI1` under Connectivity
+Enable SPI1 under **Connectivity**:
+
 - Mode: `Full-Duplex Master`
-- Prescaler: `32` → SPI Clock = **5.625 MHz** (safe for MCP2515)
-- Pins used:
-  - SCK → `PA5`
-  - MISO → `PA6`
-  - MOSI → `PA7`
+- Prescaler: `32` → SPI Clock ≈ **5.625 MHz** (safe for MCP2515)
 
-#### GPIO Configuration
+**Pin Assignments:**
 
-- `PA4`: GPIO_Output (Label as `CAN_CS`)
-- `PA0`: GPIO_Input (Optional MCP2515 INT)
+| SPI Signal | STM32 Pin |
+|------------|------------|
+| SCK        | `PA5`      |
+| MISO       | `PA6`      |
+| MOSI       | `PA7`      |
 
-#### UART (Optional for Serial Debug)
+#### 🧷 GPIO Configuration
 
-- Enable `USART2`
-  - TX: `PA2`
-  - RX: `PA3`
-  - Baud Rate: 115200
+| Function       | Pin   | Mode         |
+|----------------|--------|--------------|
+| `CAN_CS`       | `PA4` | GPIO_Output  |
+| `MCP2515 INT`  | `PA0` | GPIO_Input (Optional) |
+
+#### 🛰️ UART2 (Optional for Debug)
+
+- Enable USART2
+- Baud Rate: 115200
+
+| Signal | Pin   |
+|--------|--------|
+| TX     | `PA2` |
+| RX     | `PA3` |
+
+---
+
+### 🛣️ CAN1 (Optional - STM32 Native CAN)
+
+If using STM32 CAN features (`CAN_TxHeaderTypeDef`, `CAN_RxHeaderTypeDef`), enable `CAN1` in CubeMX.
+
+#### ✅ Pin Assignments (STM32F446RE)
+
+| Function | STM32 Pin | Alternate Function |
+|----------|------------|--------------------|
+| CAN_TX   | `PB9`      | `AF9`              |
+| CAN_RX   | `PB8`      | `AF9`              |
+
+> 💡 These are required only if you're using STM32’s internal CAN controller and HAL CAN APIs like `HAL_CAN_AddTxMessage()`.
 
 ---
 
 ### 🛠️ 5. Generate Code
 
-- Click **Project > Generate Code**
-- Use **STM32CubeIDE** toolchain
-- This generates:
-  - `main.c` - user application logic
-  - `spi.c` - SPI setup
-  - `gpio.c` - GPIO (including CS line)
-  - `usart.c` - UART debug (optional)
+- Go to **Project > Generate Code**
+- Select toolchain: `STM32CubeIDE`
+
+This generates:
+
+| File        | Purpose                             |
+|-------------|-------------------------------------|
+| `main.c`    | Main application logic              |
+| `spi.c`     | SPI setup for MCP2515               |
+| `gpio.c`    | GPIOs including CS and INT          |
+| `usart.c`   | UART debug output (optional)        |
 
 ---
+
+

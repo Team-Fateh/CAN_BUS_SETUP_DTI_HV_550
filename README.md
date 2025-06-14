@@ -405,3 +405,60 @@ void Decode_CAN_Message(CAN_RxHeaderTypeDef *header, uint8_t *data)
 }
 
 ```
+## 🔁 Main `while(1)` Loop Explanation
+
+The `while (1)` loop in your `main.c` is the heart of your embedded firmware — it continuously runs after initialization and performs the following tasks in a loop:
+
+```c
+while (1)
+{
+    if (CANSPI_Receive(&rxMessage))
+    {
+        CAN_RxHeaderTypeDef fakeHeader;
+        fakeHeader.StdId = rxMessage.frame.id;
+        Decode_CAN_Message(&fakeHeader, &rxMessage.frame.data0);
+    }
+
+    HAL_Delay(100);
+
+    NEXTION_SEND("t15", erpm / 10);      // Send ERPM to Nextion display (divided for scaling)
+    NEXTION_SEND("t24", motor_temp);     // Send motor temperature to Nextion
+    NEXTION_SendString("t5", "30");      // Send static string to t5 field
+    NEXTION_SendString("t3", "30");      // Send static string to t3 field
+}
+```
+## 🧠 What Each Section Does
+
+| Part                        | Description |
+|-----------------------------|-------------|
+| `CANSPI_Receive(&rxMessage)` | Polls the MCP2515 (CAN SPI) for a new CAN message. Returns `1` if a message is received. |
+| `Decode_CAN_Message(...)`   | Processes and parses the received CAN frame based on its `StdId` (CAN ID). It extracts data like motor current, temperature, RPM, etc., and prints it to UART2 (debug/PC). |
+| `HAL_Delay(100)`            | Waits for 100 ms between iterations — to reduce CPU usage and provide time for peripherals. |
+| `NEXTION_SEND(...)`         | Sends updated values to the Nextion HMI display over UART1. Used to show ERPM, motor temp, and static placeholder values. |
+
+---
+
+## 💬 Notes
+
+- `Decode_CAN_Message()` is responsible for handling different message IDs like:
+  - `0x1F0F`
+  - `0x200F`
+  - `0x210F`
+  - `0x220F`
+
+- The `NEXTION_SEND` macro smartly dispatches the correct function:
+  - `NEXTION_SendInt`
+  - `NEXTION_SendFloat`
+  - `NEXTION_SendString`
+
+- Static values `"30"` sent to `t5` and `t3` on the Nextion display may be placeholders or temporary test strings — feel free to replace them with dynamic data.
+
+---
+
+## 🛠️ Example UART2 Output
+
+```text
+ID: 0x200F | ERPM: 4500 | Duty: 67.8 % | Voltage: 52 V
+ID: 0x210F | AC Current: 5.60 A | DC Current: 23.70 A
+ID: 0x220F | Ctrl Temp: 54.0 °C | Motor Temp: 49.5 °C | Fault: 0x00
+

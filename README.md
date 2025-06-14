@@ -145,7 +145,22 @@ Setting the STM32F446RE to **180 MHz** (its maximum frequency) improves performa
 Enable SPI1 under **Connectivity**:
 
 - Mode: `Full-Duplex Master`
-- Prescaler: `32` → SPI Clock ≈ **5.625 MHz** (safe for MCP2515)
+---
+
+### 🛠️ Why Not Use Higher SPI Speeds?
+
+| Reason                  | Explanation                                |
+|-------------------------|--------------------------------------------|
+| 🧱 **MCP2515 Limit**     | Absolute maximum SPI speed = **10 MHz**    |
+| 🧪 **Stability over Speed** | Lower SPI clock = fewer communication errors |
+| ⚙️ **CubeIDE Configuration** | Prescaler selected to stay **safely below 10 MHz** |
+
+> ✅ Recommended SPI Clock: **≤ 10 MHz**  
+> 📉 In this project: **5.625 MHz** (Prescaler = 16)
+
+---
+
+  <img src="Images/SPI.png" alt="Setup" width="900"/>
 
 **Pin Assignments:**
 

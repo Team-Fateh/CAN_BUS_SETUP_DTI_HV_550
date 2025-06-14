@@ -229,4 +229,6 @@ This generates:
 
 ---
 
+[DTI_CAN_MANUAL](https://github.com/Team-Fateh/CAN_BUS_SETUP_DTI_HV_550/tree/84bff78ab5c0deee9fc42e94dde004f92dfc0d29/Documentation_%26_Resources/hv550_hv850_can2_map_v25)
+
 

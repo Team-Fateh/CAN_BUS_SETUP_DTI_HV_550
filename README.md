@@ -405,7 +405,7 @@ void Decode_CAN_Message(CAN_RxHeaderTypeDef *header, uint8_t *data)
 }
 
 ```
-## 🔁 Main `while(1)` Loop Explanation
+## Main `while(1)` Loop Explanation
 
 The `while (1)` loop in your `main.c` is the heart of your embedded firmware — it continuously runs after initialization and performs the following tasks in a loop:
 
@@ -427,7 +427,7 @@ while (1)
     NEXTION_SendString("t3", "30");      // Send static string to t3 field
 }
 ```
-## 🧠 What Each Section Does
+## What Each Section Does
 
 | Part                        | Description |
 |-----------------------------|-------------|
@@ -438,7 +438,7 @@ while (1)
 
 ---
 
-## 💬 Notes
+## Notes
 
 - `Decode_CAN_Message()` is responsible for handling different message IDs like:
   - `0x1F0F`
@@ -455,7 +455,7 @@ while (1)
 
 ---
 
-## 🛠️ Example UART2 Output
+## Example UART2 Output
 
 ```text
 ID: 0x200F | ERPM: 4500 | Duty: 67.8 % | Voltage: 52 V

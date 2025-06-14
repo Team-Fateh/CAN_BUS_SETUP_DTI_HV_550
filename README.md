@@ -145,7 +145,6 @@ Setting the STM32F446RE to **180 MHz** (its maximum frequency) improves performa
 Enable SPI1 under **Connectivity**:
 
 - Mode: `Full-Duplex Master`
----
 
 ### 🛠️ Why Not Use Higher SPI Speeds?
 
@@ -155,12 +154,8 @@ Enable SPI1 under **Connectivity**:
 | 🧪 **Stability over Speed** | Lower SPI clock = fewer communication errors |
 | ⚙️ **CubeIDE Configuration** | Prescaler selected to stay **safely below 10 MHz** |
 
-> ✅ Recommended SPI Clock: **≤ 10 MHz**  
-> 📉 In this project: **5.625 MHz** (Prescaler = 16)
-
----
-
-  <img src="Images/SPI.png" alt="Setup" width="900"/>
+> Recommended SPI Clock: **≤ 10 MHz**  
+> In this project: **5.625 MHz** (Prescaler = 16)
 
 **Pin Assignments:**
 
@@ -170,6 +165,8 @@ Enable SPI1 under **Connectivity**:
 | MISO       | `PA6`      |
 | MOSI       | `PA7`      |
 
+  <img src="Images/SPI.png" alt="Setup" width="900"/>
+---
 #### 🧷 GPIO Configuration
 
 | Function       | Pin   | Mode         |

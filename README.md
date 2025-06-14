@@ -306,6 +306,100 @@ Unknown CAN ID: 0x123
 
 All messages are transmitted using `HAL_UART_Transmit()` on **USART2**. You can monitor the output using tools like:
 
-- PuTTY
-- TeraTerm
-- STM32CubeMonitor
+- **PuTTY**
+- **TeraTerm**
+- **STM32CubeMonitor**
+
+---
+
+### Code Snippet (Excerpt)
+
+```c
+void Decode_CAN_Message(CAN_RxHeaderTypeDef *header, uint8_t *data)
+{
+    switch (header->StdId)
+    {
+		case 0x1F0F: // General Data 6: Control mode, Target Iq, Motor position, isMotorStill
+		{
+			control_mode = data[0];
+
+			target_iq_raw = (int16_t)((data[1] << 8) | data[2]);
+			target_iq = target_iq_raw / 10.0f;
+
+			motor_position_raw = (data[3] << 8) | data[4];
+			motor_position = motor_position_raw / 10.0f;
+
+			is_motor_still = data[5];
+
+			snprintf(uart_buffer,
+					 sizeof(uart_buffer),
+					 "ID: 0x1F0F | Ctrl Mode: %u | Target Iq: %.1f A | Motor Pos: %.1f deg | Still: %s\r\n",
+					 control_mode,
+					 target_iq,
+					 motor_position,
+					 is_motor_still ? "1" : "0");
+
+			HAL_UART_Transmit(&huart2, (uint8_t*)uart_buffer, strlen(uart_buffer), 100);
+			break;
+		}
+        case 0x200F: // ERPM, Duty, Voltage
+        {
+            erpm = (int32_t)((data[0] << 24) | (data[1] << 16) | (data[2] << 8) | data[3]);
+            duty_raw = (data[4] << 8) | data[5];
+            voltage = (data[6] << 8) | data[7];
+
+            duty = duty_raw / 10.0f;
+
+            snprintf(uart_buffer,
+                     sizeof(uart_buffer),
+                     "ID: 0x200F | ERPM: %ld | Duty: %.1f %% | Voltage: %u V\r\n",
+                     erpm, duty, voltage);
+            HAL_UART_Transmit(&huart2, (uint8_t*)uart_buffer, strlen(uart_buffer), 100);
+            break;
+        }
+
+        case 0x210F: // AC Current, DC Current
+        {
+            ac_current_raw = (data[0] << 8) | data[1];
+            dc_current_raw = (data[2] << 8) | data[3];
+
+            ac_current = ac_current_raw * 0.01f;
+            dc_current = dc_current_raw * 0.1f;
+
+            snprintf(uart_buffer,
+                     sizeof(uart_buffer),
+                     "ID: 0x210F | AC Current: %.2f A | DC Current: %.2f A\r\n",
+                     ac_current, dc_current);
+            HAL_UART_Transmit(&huart2, (uint8_t*)uart_buffer, strlen(uart_buffer), 100);
+            break;
+        }
+
+        case 0x220F: // Ctrl Temp, Motor Temp, Fault Code
+        {
+            ctrl_temp_raw = (data[0] << 8) | data[1];
+            motor_temp_raw = (data[2] << 8) | data[3];
+            fault_code = data[4];
+
+            ctrl_temp = ctrl_temp_raw * 0.1f;
+            motor_temp = motor_temp_raw * 0.1f;
+
+            snprintf(uart_buffer,
+                     sizeof(uart_buffer),
+                     "ID: 0x220F | Ctrl Temp: %.1f °C | Motor Temp: %.1f °C | Fault: 0x%02X\r\n",
+                     ctrl_temp, motor_temp, fault_code);
+            HAL_UART_Transmit(&huart2, (uint8_t*)uart_buffer, strlen(uart_buffer), 100);
+            break;
+        }
+
+        default:
+        {
+            snprintf(uart_buffer,
+                     sizeof(uart_buffer),
+                     "Unknown CAN ID: 0x%03lX\r\n", (unsigned long)header->StdId);
+            HAL_UART_Transmit(&huart2, (uint8_t*)uart_buffer, strlen(uart_buffer), 100);
+            break;
+        }
+    }
+}
+
+```

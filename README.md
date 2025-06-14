@@ -115,6 +115,7 @@ This section lists the necessary tools, libraries, and software configurations n
 #### RCC
 
 - **High-Speed Clock (HSE)**: `Crystal/Ceramic Resonator`
+<img src="Images/rcc.png" alt="Setup" width="900"/>
 
 ---
 

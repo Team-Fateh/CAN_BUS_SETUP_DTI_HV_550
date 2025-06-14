@@ -117,6 +117,17 @@ This section lists the necessary tools, libraries, and software configurations n
 - **High-Speed Clock (HSE)**: `Crystal/Ceramic Resonator`
 <img src="Images/rcc.png" alt="Setup" width="900"/>
 
+#### ⚡ Why Set STM32F446RE System Clock to 180 MHz?
+
+Setting the STM32F446RE to **180 MHz** (its maximum frequency) improves performance across the entire project:
+
+| ✅ Benefit                  | 🚀 Why It Matters                                     |
+|----------------------------|--------------------------------------------------------|
+| **SPI Clock Headroom**     | Enables faster communication with MCP2515 (up to 10 MHz) |
+| **Faster CAN Frame Handling** | Ensures real-time updates from DTI HV 550 Motor Controller |
+| **Efficient HAL Operations** | More accurate delays, better timing for CAN & display |
+| **Better UI Performance**  | Quicker screen updates on Nextion display              |
+
 ---
 
 ### ⏰ 3. Clock Configuration

@@ -228,23 +228,22 @@ This generates:
 <img src="Images/code_gen.png" alt="Setup" width="900"/>
 
 ---
-
 ## 🧠 `Decode_CAN_Message()` Function
 
-This function is responsible for parsing and decoding incoming CAN frames from the **DTI HV 550 Motor Controller**. Based on the `StdId` (Standard Identifier), it extracts and interprets data fields, then formats human-readable messages which are transmitted via **USART2** using `HAL_UART_Transmit()`.
+This function parses incoming CAN frames from the **DTI HV 550 Motor Controller** and decodes them based on their `StdId`. It then sends human-readable debug messages over **USART2** using `HAL_UART_Transmit()`.
+
+### 🧾 Function Prototype
 
 ```c
 void Decode_CAN_Message(CAN_RxHeaderTypeDef *header, uint8_t *data);
-``` 
-🔧 Inputs
+```
+🔧 Parameters
 Parameter	Type	Description
-header	CAN_RxHeaderTypeDef *	Pointer to CAN header (includes StdId)
-data	uint8_t *	Pointer to CAN payload data (8 bytes)
+header	CAN_RxHeaderTypeDef*	Pointer to CAN header containing StdId
+data	uint8_t*	Pointer to 8-byte CAN payload
 
 📤 Output
-UART message via HAL_UART_Transmit() (on USART2)
-
-Log format varies per CAN ID
+UART messages via HAL_UART_Transmit() (USART2) based on CAN ID.
 
 📦 Supported CAN IDs
 CAN ID	Frame Description
@@ -256,14 +255,10 @@ CAN ID	Frame Description
 🔍 Case-by-Case Breakdown
 🧩 0x1F0F: General Data 6
 Field	Description
-control_mode	Motor control mode (e.g. torque, speed)
-target_iq	Desired torque-producing current (A)
-motor_position	Electrical rotor position (°)
-is_motor_still	Boolean flag: 1 = still, 0 = moving
-
-target_iq is derived by dividing raw value by 10
-
-motor_position is derived by dividing raw value by 10
+control_mode	Motor control mode
+target_iq	Torque current (scaled /10)
+motor_position	Rotor position in degrees (scaled /10)
+is_motor_still	Boolean: 1 = still, 0 = moving
 
 ✅ UART Output:
 
@@ -273,11 +268,9 @@ Edit
 ID: 0x1F0F | Ctrl Mode: 1 | Target Iq: 13.5 A | Motor Pos: 42.0 deg | Still: 0
 ⚙️ 0x200F: Speed, Duty, Voltage
 Field	Description
-erpm	Electrical RPM (signed 32-bit value)
-duty	PWM duty cycle percentage (scaled /10)
-voltage	DC bus voltage in volts (raw 16-bit)
-
-duty = raw value ÷ 10
+erpm	Electrical RPM (signed 32-bit)
+duty	PWM duty cycle (scaled /10)
+voltage	DC bus voltage (in volts)
 
 ✅ UART Output:
 
@@ -296,11 +289,11 @@ yaml
 Copy
 Edit
 ID: 0x210F | AC Current: 8.42 A | DC Current: 31.2 A
-🌡️ 0x220F: Temperatures & Fault Codes
+🌡️ 0x220F: Temperatures & Fault Code
 Field	Description
 ctrl_temp	Controller temperature (°C, scaled /10)
 motor_temp	Motor temperature (°C, scaled /10)
-fault_code	Fault code (0x00 = OK, others = error states)
+fault_code	Fault code (0x00 = OK, others = error)
 
 ✅ UART Output:
 
@@ -309,7 +302,7 @@ Copy
 Edit
 ID: 0x220F | Ctrl Temp: 55.2 °C | Motor Temp: 48.7 °C | Fault: 0x00
 ❓ Default Case: Unknown CAN ID
-If the received frame has an unrecognized StdId, the function prints a generic message.
+If an unknown CAN ID is received, a generic message is printed.
 
 ✅ UART Output:
 
@@ -318,16 +311,36 @@ Copy
 Edit
 Unknown CAN ID: 0x123
 🧪 UART Debugging
-All logs are transmitted via HAL_UART_Transmit() over USART2, using the uart_buffer. These messages can be viewed using any serial terminal:
+All messages are transmitted using HAL_UART_Transmit() on USART2. You can view them using any serial terminal such as:
 
 PuTTY
 
 TeraTerm
 
-STM32CubeMonitor or similar
+STM32CubeMonitor
 
-
-
-[DTI_CAN_MANUAL](https://github.com/Team-Fateh/CAN_BUS_SETUP_DTI_HV_550/tree/84bff78ab5c0deee9fc42e94dde004f92dfc0d29/Documentation_%26_Resources/hv550_hv850_can2_map_v25)
-
-
+📁 Code Snippet (Excerpt)
+```c
+Copy
+Edit
+void Decode_CAN_Message(CAN_RxHeaderTypeDef *header, uint8_t *data)
+{
+    switch (header->StdId)
+    {
+        case 0x1F0F:
+            // Decode General Data
+            break;
+        case 0x200F:
+            // Decode Speed, Duty, Voltage
+            break;
+        case 0x210F:
+            // Decode Currents
+            break;
+        case 0x220F:
+            // Decode Temperatures & Faults
+            break;
+        default:
+            // Unknown CAN ID
+            break;
+    }
+}

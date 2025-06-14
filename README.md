@@ -232,115 +232,156 @@ This generates:
 
 This function parses incoming CAN frames from the **DTI HV 550 Motor Controller** and decodes them based on their `StdId`. It then sends human-readable debug messages over **USART2** using `HAL_UART_Transmit()`.
 
-### 🧾 Function Prototype
+---
+
+### 🔧 Function Prototype
 
 ```c
 void Decode_CAN_Message(CAN_RxHeaderTypeDef *header, uint8_t *data);
 ```
-🔧 Parameters
-Parameter	Type	Description
-header	CAN_RxHeaderTypeDef*	Pointer to CAN header containing StdId
-data	uint8_t*	Pointer to 8-byte CAN payload
 
-📤 Output
-UART messages via HAL_UART_Transmit() (USART2) based on CAN ID.
+---
 
-📦 Supported CAN IDs
-CAN ID	Frame Description
-0x1F0F	General Data 6: Control Mode, Iq, Position
-0x200F	Speed (ERPM), Duty Cycle, Voltage
-0x210F	AC Current, DC Current
-0x220F	Controller Temp, Motor Temp, Fault Code
+### 📥 Parameters
 
-🔍 Case-by-Case Breakdown
-🧩 0x1F0F: General Data 6
-Field	Description
-control_mode	Motor control mode
-target_iq	Torque current (scaled /10)
-motor_position	Rotor position in degrees (scaled /10)
-is_motor_still	Boolean: 1 = still, 0 = moving
+| Parameter | Type                   | Description                                      |
+|-----------|------------------------|--------------------------------------------------|
+| `header`  | `CAN_RxHeaderTypeDef*` | Pointer to CAN frame header (contains `StdId`)   |
+| `data`    | `uint8_t*`             | Pointer to 8-byte CAN data payload               |
 
-✅ UART Output:
+---
 
-yaml
-Copy
-Edit
+### 📤 Output
+
+All decoded log messages are sent via `HAL_UART_Transmit()` on **USART2**.
+
+---
+
+### 📦 Supported CAN IDs
+
+| CAN ID   | Frame Description                              |
+|----------|------------------------------------------------|
+| `0x1F0F` | General Data 6: Control Mode, Iq, Position      |
+| `0x200F` | Speed (ERPM), Duty Cycle, Voltage               |
+| `0x210F` | AC Current, DC Current                          |
+| `0x220F` | Controller Temp, Motor Temp, Fault Code         |
+
+---
+
+### 🔍 Case-by-Case Breakdown
+
+#### 🧩 `0x1F0F`: General Data 6
+
+| Field           | Description                                        |
+|-----------------|----------------------------------------------------|
+| `control_mode`  | Motor control mode                                 |
+| `target_iq`     | Desired torque-producing current (scaled /10)      |
+| `motor_position`| Rotor position in degrees (scaled /10)             |
+| `is_motor_still`| Boolean: 1 = still, 0 = moving                      |
+
+##### ✅ Sample UART Output
+
+```yaml
 ID: 0x1F0F | Ctrl Mode: 1 | Target Iq: 13.5 A | Motor Pos: 42.0 deg | Still: 0
-⚙️ 0x200F: Speed, Duty, Voltage
-Field	Description
-erpm	Electrical RPM (signed 32-bit)
-duty	PWM duty cycle (scaled /10)
-voltage	DC bus voltage (in volts)
+```
 
-✅ UART Output:
+---
 
-yaml
-Copy
-Edit
+#### ⚙️ `0x200F`: Speed, Duty, Voltage
+
+| Field    | Description                                  |
+|----------|----------------------------------------------|
+| `erpm`   | Electrical RPM (signed 32-bit)               |
+| `duty`   | PWM duty cycle (scaled /10)                  |
+| `voltage`| DC Bus voltage (raw 16-bit value)            |
+
+##### ✅ Sample UART Output
+
+```yaml
 ID: 0x200F | ERPM: 12450 | Duty: 36.5 % | Voltage: 52 V
-🔌 0x210F: Current Measurements
-Field	Description
-ac_current	Motor phase AC current (scaled /100)
-dc_current	Bus DC current (scaled /10)
+```
 
-✅ UART Output:
+---
 
-yaml
-Copy
-Edit
+#### 🔌 `0x210F`: Current Measurements
+
+| Field        | Description                               |
+|--------------|-------------------------------------------|
+| `ac_current` | Phase AC current (scaled /100)            |
+| `dc_current` | DC bus current (scaled /10)               |
+
+##### ✅ Sample UART Output
+
+```yaml
 ID: 0x210F | AC Current: 8.42 A | DC Current: 31.2 A
-🌡️ 0x220F: Temperatures & Fault Code
-Field	Description
-ctrl_temp	Controller temperature (°C, scaled /10)
-motor_temp	Motor temperature (°C, scaled /10)
-fault_code	Fault code (0x00 = OK, others = error)
+```
 
-✅ UART Output:
+---
 
-yaml
-Copy
-Edit
+#### 🌡️ `0x220F`: Temperatures & Fault Code
+
+| Field        | Description                                |
+|--------------|--------------------------------------------|
+| `ctrl_temp`  | Controller temperature (°C, scaled /10)     |
+| `motor_temp` | Motor temperature (°C, scaled /10)          |
+| `fault_code` | Fault code (`0x00` = OK, others = error)    |
+
+##### ✅ Sample UART Output
+
+```yaml
 ID: 0x220F | Ctrl Temp: 55.2 °C | Motor Temp: 48.7 °C | Fault: 0x00
-❓ Default Case: Unknown CAN ID
-If an unknown CAN ID is received, a generic message is printed.
+```
 
-✅ UART Output:
+---
 
-c
-Copy
-Edit
-Unknown CAN ID: 0x123
-🧪 UART Debugging
-All messages are transmitted using HAL_UART_Transmit() on USART2. You can view them using any serial terminal such as:
+#### ❓ Default Case: Unknown CAN ID
 
-PuTTY
+If an unrecognized ID is received, the function prints a default message:
 
-TeraTerm
+##### ✅ Sample UART Output
 
-STM32CubeMonitor
-
-📁 Code Snippet (Excerpt)
 ```c
-Copy
-Edit
+Unknown CAN ID: 0x123
+```
+
+---
+
+### 🧪 UART Debugging
+
+All messages are transmitted using `HAL_UART_Transmit()` on **USART2**. You can monitor the output using tools like:
+
+- **PuTTY**
+- **TeraTerm**
+- **STM32CubeMonitor**
+
+---
+
+### 💻 Code Snippet (Excerpt)
+
+```c
 void Decode_CAN_Message(CAN_RxHeaderTypeDef *header, uint8_t *data)
 {
     switch (header->StdId)
     {
         case 0x1F0F:
-            // Decode General Data
+            // Decode General Data 6
             break;
+
         case 0x200F:
             // Decode Speed, Duty, Voltage
             break;
+
         case 0x210F:
             // Decode Currents
             break;
+
         case 0x220F:
-            // Decode Temperatures & Faults
+            // Decode Temperatures & Fault Code
             break;
+
         default:
             // Unknown CAN ID
             break;
     }
 }
+```

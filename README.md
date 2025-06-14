@@ -110,7 +110,7 @@ This section lists the necessary tools, libraries, and software configurations n
 
 - **Debug Interface**: `Serial Wire`
 
-<img src="Images/sys.png" alt="Setup" width="700"/>
+<img src="Images/sys.png" alt="Setup" width="900"/>
 
 #### RCC
 

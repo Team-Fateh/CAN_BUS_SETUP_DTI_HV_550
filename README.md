@@ -117,6 +117,15 @@ This section lists the necessary tools, libraries, and software configurations n
 - **High-Speed Clock (HSE)**: `Crystal/Ceramic Resonator`
 <img src="Images/rcc.png" alt="Setup" width="900"/>
 
+---
+
+### ⏰ 3. Clock Configuration
+
+- Open the **Clock Configuration** tab
+- Set the system clock (`HCLK`) to **180 MHz**
+- Let STM32CubeIDE auto-calculate PLL settings
+<img src="Images/clockconfig.png" alt="Setup" width="900"/>
+
 ### ⚡ Why Set STM32F446RE System Clock to 180 MHz?
 
 Setting the STM32F446RE to **180 MHz** (its maximum frequency) improves performance across the entire project:
@@ -127,15 +136,6 @@ Setting the STM32F446RE to **180 MHz** (its maximum frequency) improves performa
 | **Faster CAN Frame Handling** | Ensures real-time updates from DTI HV 550 Motor Controller |
 | **Efficient HAL Operations** | More accurate delays, better timing for CAN & display |
 | **Better UI Performance**  | Quicker screen updates on Nextion display              |
-
----
-
-### ⏰ 3. Clock Configuration
-
-- Open the **Clock Configuration** tab
-- Set the system clock (`HCLK`) to **180 MHz**
-- Let STM32CubeIDE auto-calculate PLL settings
-<img src="Images/clockconfig.png" alt="Setup" width="900"/>
 ---
 
 ### 🧩 4. Peripheral Pinout & Configuration

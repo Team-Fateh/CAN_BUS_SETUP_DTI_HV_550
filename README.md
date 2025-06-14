@@ -224,7 +224,7 @@ This generates:
 | `gpio.c`    | GPIOs including CS and INT          |
 | `usart.c`   | UART debug output (optional)        |
 
-<img src="Images/codegen.png" alt="Setup" width="900"/>
+<img src="Images/code_gen.png" alt="Setup" width="900"/>
 
 ---
 

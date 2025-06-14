@@ -455,6 +455,6 @@ while (1)
 
 ---
 
-<img src="Images/output.png" alt="Setup" width="900"/>
+<img src="Images/output.jpg" alt="Setup" width="900"/>
 
 

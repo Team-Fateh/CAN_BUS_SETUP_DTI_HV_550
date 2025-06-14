@@ -229,6 +229,87 @@ This generates:
 
 ---
 
+## 🧠 `Decode_CAN_Message()` Overview
+
+This function handles CAN frame parsing received from the **DTI HV 550 Motor Controller** and decodes them based on the `StdId` (Standard ID).  
+It formats and sends human-readable output over **UART (USART2)** for real-time monitoring or debugging.
+
+```c
+void Decode_CAN_Message(CAN_RxHeaderTypeDef *header, uint8_t *data);
+📦 Supported CAN IDs
+CAN ID	Frame Description
+0x1F0F	General Data 6: Control Mode, Iq, Position
+0x200F	Speed (ERPM), Duty Cycle, Voltage
+0x210F	AC Current, DC Current
+0x220F	Controller Temp, Motor Temp, Fault Code
+
+🔍 Case-by-Case Breakdown
+🧩 0x1F0F: General Data 6
+Field	Description
+control_mode	Motor control mode
+target_iq	Desired torque current (scaled /10)
+motor_position	Rotor position in degrees (scaled /10)
+is_motor_still	Boolean: 1 = still, 0 = moving
+
+✅ UART Output:
+
+yaml
+Copy
+Edit
+ID: 0x1F0F | Ctrl Mode: 1 | Target Iq: 13.5 A | Motor Pos: 42.0 deg | Still: 0
+⚙️ 0x200F: Speed, Duty, Voltage
+Field	Description
+erpm	Electrical RPM (signed 32-bit)
+duty	PWM duty cycle (scaled /10)
+voltage	DC Bus voltage (in volts)
+
+✅ UART Output:
+
+yaml
+Copy
+Edit
+ID: 0x200F | ERPM: 12450 | Duty: 36.5 % | Voltage: 52 V
+🔌 0x210F: Currents
+Field	Description
+ac_current	Phase current (A, scaled /100)
+dc_current	DC bus current (A, scaled /10)
+
+✅ UART Output:
+
+yaml
+Copy
+Edit
+ID: 0x210F | AC Current: 8.42 A | DC Current: 31.2 A
+🌡️ 0x220F: Temperatures & Fault Code
+Field	Description
+ctrl_temp	Controller temperature (°C, scaled /10)
+motor_temp	Motor temperature (°C, scaled /10)
+fault_code	Error code (0x00 = OK)
+
+✅ UART Output:
+
+yaml
+Copy
+Edit
+ID: 0x220F | Ctrl Temp: 55.2 °C | Motor Temp: 48.7 °C | Fault: 0x00
+❓ Default Case: Unknown Frame
+If an unrecognized CAN ID is received, the function logs it as unknown.
+
+✅ Example UART Output:
+
+objectivec
+Copy
+Edit
+Unknown CAN ID: 0x123
+🧪 UART Debugging
+All decoded data is sent via HAL_UART_Transmit() on USART2. You can view the output using:
+
+PuTTY
+
+TeraTerm
+
+STM32CubeMonitor
+
 [DTI_CAN_MANUAL](https://github.com/Team-Fateh/CAN_BUS_SETUP_DTI_HV_550/tree/84bff78ab5c0deee9fc42e94dde004f92dfc0d29/Documentation_%26_Resources/hv550_hv850_can2_map_v25)
 
 

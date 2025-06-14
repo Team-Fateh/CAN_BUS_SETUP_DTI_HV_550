@@ -455,10 +455,6 @@ while (1)
 
 ---
 
-## Example UART2 Output
+<img src="Images/output.png" alt="Setup" width="900"/>
 
-```text
-ID: 0x200F | ERPM: 4500 | Duty: 67.8 % | Voltage: 52 V
-ID: 0x210F | AC Current: 5.60 A | DC Current: 23.70 A
-ID: 0x220F | Ctrl Temp: 54.0 °C | Motor Temp: 49.5 °C | Fault: 0x00
 

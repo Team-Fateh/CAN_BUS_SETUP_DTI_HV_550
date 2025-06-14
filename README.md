@@ -188,6 +188,7 @@ Enable SPI1 under **Connectivity**:
 |--------|--------|
 | TX     | `PA2` |
 | RX     | `PA3` |
+<img src="Images/usart2.png" alt="Setup" width="900"/>
 
 ---
 

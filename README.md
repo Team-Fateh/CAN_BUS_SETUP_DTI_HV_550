@@ -90,6 +90,49 @@ This section lists the necessary tools, libraries, and software configurations n
 | **DTI CAN Tool**               | Desktop tool provided by DTI to send/receive CAN messages and debug        |
 | **Serial Terminal (optional)** | e.g. PuTTY or Tera Term, for UART-based debugging                          |
 
+##  DTI Software Setup – CAN Configuration
+
+To configure the DTI software for use with the HV-550/850 inverter, follow these steps carefully:
+
+### 1. Required Files
+Make sure you have the following:
+- The **CAN manual** (refer to attached documentation)
+- The **DBC files** for the latest **V25 CAN Map version**
+
+### 2. Software Settings
+
+Navigate to `App Settings > CAN` tab:
+-  **Enable** the `CAN 2` interface
+-  **Set** the `CAN2 Map Version` to `V25`
+-  **Write** the updated configuration to the inverter
+
+### 3. CAN ID Configuration
+
+Set the **Controller ID** in the software to match the ID shown in the **CAN manual**.  
+This avoids any communication issues due to ID mismatches.
+
+### 4. Hardware Checklist
+
+Ensure the following hardware requirements are met:
+
+-  Proper **termination** on both ends (120 Ohm)
+-  Good **shielding** and **grounding**
+-  Use **twisted-pair cables** for CAN lines
+-  **DO NOT** connect `CAN1` and `CAN2` interfaces together
+
+> Refer to the **HV-550/850 Inverter Manual**:  
+> Page 19 & Page 25 for detailed wiring instructions.
+
+### 5. Example Screenshot
+
+Below is a screenshot of the CAN tab for reference:
+
+<img src="Images/interfaceDTI.jpg" alt="TE" width="1000"/>
+
+By following this setup, you ensure stable and correct communication between the DTI software and the inverter over CAN.
+
+---
+
 ## STM32CubeIDE Project Configuration
 
 ### 1. Create Project
